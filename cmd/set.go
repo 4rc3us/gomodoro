@@ -17,10 +17,18 @@ limitations under the License.
 package cmd
 
 import (
+	"4rc3us/gomodoro/enums"
 	"fmt"
+	"strings"
+
+	"os"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
+
+var pomodoroTime string
+var unit string
 
 // setCmd represents the set command
 var setCmd = &cobra.Command{
@@ -29,11 +37,26 @@ var setCmd = &cobra.Command{
 	Long:  `set time for pomodoro in minutes`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("set called")
+		pomodoroTimeInt, err := strconv.Atoi(pomodoroTime)
+		if err != nil {
+			fmt.Println("Error: ", err)
+			os.Exit(1)
+		}
+
+		unit, err := enums.NewTimeUnit(strings.ToUpper(unit))
+		if err != nil {
+			fmt.Println("Error: ", err)
+			os.Exit(1)
+		}
+
+		fmt.Println("Pomodoro time set to: ", pomodoroTimeInt, " ", "unit: ", unit)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(setCmd)
+	setCmd.Flags().StringVarP(&pomodoroTime, "time", "t", "5", "Time for pomodoro")
+	setCmd.Flags().StringVarP(&unit, "unit", "u", "M", "Unit for time")
 
 	// Here you will define your flags and configuration settings.
 

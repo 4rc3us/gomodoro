@@ -5,7 +5,7 @@ CLI timer for your terminal easy and simple to use, just type gomodoro.
 ## root  command
 > Usage:
 >   gomodoro [command]
-
+>
 > Available Commands:
 >   completion  Generate the autocompletion script for the specified shell
 >   help        Help about any command
@@ -18,6 +18,11 @@ CLI timer for your terminal easy and simple to use, just type gomodoro.
 > Use "gomodoro [command] --help" for more information about a command.
 
 ## set command
+> set time for pomodoro using
+> 	Supported units: M, S, H
+>
+> 	Example: gomodoro set --time 25 --unit M
+>
 > Usage:
 >   gomodoro set [flags]
 >

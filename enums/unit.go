@@ -16,7 +16,10 @@ limitations under the License.
 
 package enums
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Unit string
 
@@ -38,4 +41,19 @@ func NewTimeUnit(newUnit string) (Unit, error) {
 
 	err := errors.New("Invalid time unit")
 	return "", err
+}
+
+func (u Unit) ToTimeDuration() time.Duration {
+	switch u {
+	case Minutes:
+		return time.Minute
+	case Hours:
+		return time.Hour
+	case Seconds:
+		return time.Second
+	case Days:
+		return time.Hour * 24
+	}
+
+	return time.Second
 }

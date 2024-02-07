@@ -20,6 +20,7 @@ import (
 	"4rc3us/gomodoro/enums"
 	"fmt"
 	"strings"
+	"time"
 
 	"os"
 	"strconv"
@@ -30,41 +31,41 @@ import (
 var pomodoroTime string
 var unit string
 
-// setCmd represents the set command
 var setCmd = &cobra.Command{
 	Use:   "set",
 	Short: "set time for pomodoro",
-	Long:  `set time for pomodoro in minutes`,
+	Long: `set time for pomodoro using
+	Supported units: M, S, H
+
+	Example: gomodoro set --time 25 --unit M`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("set called")
 		pomodoroTimeInt, err := strconv.Atoi(pomodoroTime)
 		if err != nil {
-			fmt.Println("Error: ", err)
+			fmt.Println("Error:", err)
 			os.Exit(1)
 		}
 
 		unit, err := enums.NewTimeUnit(strings.ToUpper(unit))
 		if err != nil {
-			fmt.Println("Error: ", err)
+			fmt.Println(err, "\nvalid units: M, S, H, D")
 			os.Exit(1)
 		}
 
-		fmt.Println("Pomodoro time set to: ", pomodoroTimeInt, " ", "unit: ", unit)
+		fmt.Println("Pomodoro time set to:", pomodoroTimeInt, unit)
+		timer := time.NewTimer(time.Duration(pomodoroTimeInt) * unit.ToTimeDuration())
+		<-timer.C
+		fmt.Println("Pomodoro finished")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(setCmd)
-	setCmd.Flags().StringVarP(&pomodoroTime, "time", "t", "5", "Time for pomodoro")
+	setCmd.Flags().StringVarP(&pomodoroTime, "time", "t", "", "Time for pomodoro")
 	setCmd.Flags().StringVarP(&unit, "unit", "u", "M", "Unit for time")
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// setCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// setCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	err := setCmd.MarkFlagRequired("time")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
